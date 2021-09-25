@@ -6,3 +6,6 @@ class TodoUser(AbstractUser):
     first_name = models.CharField(max_length=64, verbose_name='Имя')
     last_name = models.CharField(max_length=64, verbose_name='Фамилия')
     email = models.EmailField(unique=True, verbose_name='email')
+
+    def __str__(self):
+        return self.username
