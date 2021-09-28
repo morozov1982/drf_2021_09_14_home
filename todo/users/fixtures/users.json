@@ -1,0 +1,42 @@
+[
+  {
+    "is_superuser": true,
+    "fields": {
+      "username": "admin",
+      "first_name": "Админ",
+      "last_name": "Админский",
+      "email": "admin@fake.com",
+      "password": "123"
+    }
+  },
+  {
+    "is_superuser": false,
+    "fields": {
+      "username": "user1",
+      "first_name": "Вася",
+      "last_name": "Пупкин",
+      "email": "user1@fake.com",
+      "password": "123"
+    }
+  },
+  {
+    "is_superuser": false,
+    "fields": {
+      "username": "user2",
+      "first_name": "Толя",
+      "last_name": "Ложкин",
+      "email": "user2@fake.com",
+      "password": "123"
+    }
+  },
+  {
+    "is_superuser": false,
+    "fields": {
+      "username": "user3",
+      "first_name": "Бобёр",
+      "last_name": "Пушистый",
+      "email": "user3@fake.com",
+      "password": "123"
+    }
+  }
+]
