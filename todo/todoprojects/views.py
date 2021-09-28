@@ -1,13 +1,49 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import LimitOffsetPagination
 
 from todoprojects.models import Project, ToDo
 from todoprojects.serializers import ToDoSerializer, ProjectSerializer
 
+
+class ProjectLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 10
+
+
+class ToDoLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 20
+
+
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+    pagination_class = ProjectLimitOffsetPagination
+    filterset_fields = ['title']  # решил до кучи добавить и его
+
+    def get_queryset(self):
+        if 'tc' in self.request.query_params:
+            return Project.objects.filter(
+                title__icontains=self.request.query_params['tc']
+            )  # с кириллицей регистрозависимо
+        return Project.objects.all()
 
 
 class ToDoViewSet(ModelViewSet):
     serializer_class = ToDoSerializer
-    queryset = ToDo.objects.all()
+    pagination_class = ToDoLimitOffsetPagination
+    filterset_fields = ['project']  # решил до кучи добавить и его
+
+    def get_queryset(self):
+        if 'proj' in self.request.query_params:
+            return ToDo.objects.filter(
+                project__title__icontains=self.request.query_params['proj']
+            )  # с кириллицей регистрозависимо
+        return ToDo.objects.all()
+
+    def destroy(self, request, pk):
+        todo_item = get_object_or_404(ToDo, pk=pk)
+        serializer = ToDoSerializer(todo_item)
+        todo_item.is_active = False
+        todo_item.is_closed = True
+        todo_item.save()
+        return Response(serializer.data)

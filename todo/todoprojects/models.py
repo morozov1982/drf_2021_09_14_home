@@ -22,6 +22,7 @@ class ToDo(models.Model):
     project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='Проект')
     user = models.ForeignKey(TodoUser, on_delete=models.CASCADE, verbose_name='Создал')
     is_active = models.BooleanField(default=True, verbose_name='Статус')
+    is_closed = models.BooleanField(default=False, verbose_name='Закрыто')
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')

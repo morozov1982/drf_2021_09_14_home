@@ -5,9 +5,9 @@ from users.views import TodoUserViewSet
 from todoprojects.views import ProjectViewSet, ToDoViewSet
 
 router = DefaultRouter()
-router.register('users', TodoUserViewSet)
-router.register('projects', ProjectViewSet)
-router.register('todo', ToDoViewSet)
+router.register('users', TodoUserViewSet, basename='users')
+router.register('projects', ProjectViewSet, basename='projects')
+router.register('todo', ToDoViewSet, basename='todo')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
