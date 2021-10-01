@@ -26,9 +26,7 @@ const UserList = ({users}) => {
             </thead>
 
             <tbody>
-                { users.map(
-                    (current_user) => <UserData user={current_user} />
-                )}
+                { users.map( (current_user) => <UserData user={current_user} /> )}
             </tbody>
         </table>
     )
