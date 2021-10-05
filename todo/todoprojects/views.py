@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import DjangoModelPermissions
 
 from todoprojects.models import Project, ToDo
 from todoprojects.serializers import ToDoSerializer, ProjectSerializer
@@ -16,6 +17,7 @@ class ToDoLimitOffsetPagination(LimitOffsetPagination):
 
 
 class ProjectViewSet(ModelViewSet):
+    permission_classes = [DjangoModelPermissions]
     serializer_class = ProjectSerializer
     pagination_class = ProjectLimitOffsetPagination
     filterset_fields = ['title']  # решил до кучи добавить и его
@@ -29,6 +31,7 @@ class ProjectViewSet(ModelViewSet):
 
 
 class ToDoViewSet(ModelViewSet):
+    permission_classes = [DjangoModelPermissions]
     serializer_class = ToDoSerializer
     pagination_class = ToDoLimitOffsetPagination
     filterset_fields = ['project']  # решил до кучи добавить и его
