@@ -14,7 +14,7 @@ const UserData = ({user}) => {
 
 const UserList = ({users}) => {
     return (
-        <table class="table table-striped">
+        <table className="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">id</th>

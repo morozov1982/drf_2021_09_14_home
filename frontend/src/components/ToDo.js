@@ -1,5 +1,5 @@
 import React from 'react';
-import {useParams, Link} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 const ToDoItem = ({todo}) => {
     let is_closed;
@@ -25,7 +25,7 @@ const ToDoList = ({todos}) => {
     let filtered_todos = todos.filter( (todo) => todo.project === parseInt(id) );
 
     return (
-        <table class="table table-striped">
+        <table className="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">id</th>

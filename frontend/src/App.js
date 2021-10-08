@@ -1,12 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter, Link, Redirect, Route, Switch} from "react-router-dom";
 
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import UserList from './components/Users';
 import ProjectList from "./components/Projects";
 import ToDoList from "./components/ToDo";
+import LoginForm from "./components/LoginForm";
 
 import './style.css';
 
@@ -32,52 +33,120 @@ class App extends React.Component {
             'users': [],
             'projects': [],
             'todos': [],
-            'menu': []
+            'menu': [],
+            'token': '',
+            'username': ''
         }
     }
 
-    componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/users/')
+    loginToken(username, password) {
+        localStorage.setItem('username', username)
+        axios.post('http://127.0.0.1:8000/api-token-auth/', {"username": username, "password": password})
+            .then(response  => {
+                localStorage.setItem('token', response.data.token)
+                let token = localStorage.getItem('token')
+                let username = localStorage.getItem('username')
+                this.setState({'token': token, 'username': username}, this.loadData)
+            })
+            .catch(error => alert("Неверные логин и/или пароль"))
+    }
+
+    logout() {
+        localStorage.setItem('token', '')
+        localStorage.setItem('username', '')
+        this.setState({'token': '', 'username': ''}, this.loadData)
+    }
+
+    isAuthenticated() {
+        return !!this.state.token
+    }
+
+    getHeaders() {
+        if (this.isAuthenticated()) {
+            return {'Authorization': 'Token ' + this.state.token}
+        }
+        return {}
+    }
+
+    loadData() {
+        const headers = this.getHeaders()
+
+        axios.get('http://127.0.0.1:8000/api/users/', {headers})
             .then(response => {
                 const users = response.data.results
                 this.setState({
                     'users': users
                 })
             })
-            .catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/api/projects/')
+            .catch(error => {
+                console.log(error)
+                this.setState({
+                    'users': []
+                })
+            })
+        axios.get('http://127.0.0.1:8000/api/projects/', {headers})
             .then(response => {
                 const projects = response.data.results
                 this.setState({
                     'projects': projects
                 })
             })
-            .catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/api/todo/')
+            .catch(error => {
+                console.log(error)
+                this.setState({
+                    'projects': []
+                })
+            })
+        axios.get('http://127.0.0.1:8000/api/todo/', {headers})
             .then(response => {
                 const todos = response.data.results
                 this.setState({
                     'todos': todos
                 })
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+                console.log(error)
+                this.setState({
+                    'todos': []
+                })
+            })
+    }
+
+    componentDidMount() {
+        const token = localStorage.getItem('token')
+        const username = localStorage.getItem('username')
+        this.setState({'token': token, 'username': username}, this.loadData)
     }
 
     render() {
         return (
             <div>
                 <BrowserRouter>
-                    <Menu menu={this.state.menu}/>
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                        <Menu menu={this.state.menu} />
+                        { this.isAuthenticated() ?
+                            <span>{this.state.username} <button onClick={() => this.logout()}>Выйти</button></span> :
+                            <Link className="nav-link" to="/login">Войти</Link>
+                        }
+                    </nav>
 
                     <content>
                         <Switch>
-                            <Route exact path='/' component={ () => <UserList users={this.state.users}/> } />
-                            <Route exact path='/projects' component={ () => <ProjectList projects={this.state.projects}/> } />
+                            <Route exact path='/' component={() => <UserList users={this.state.users}/>}/>
+                            <Route exact path='/projects'
+                                   component={() => <ProjectList projects={this.state.projects}/>}/>
 
-                            <Route path='/project/:id' component={ () => <ToDoList todos={this.state.todos}/> } />
+                            {this.isAuthenticated() ?
+                                <Redirect from='/login' to='/'/> :
+                                <Route exact path='/login' component={() => <LoginForm
+                                    loginToken={(username, password) => this.loginToken(username, password)}/>}/>
+                            }
 
-                            <Redirect from='/users' to='/' />
-                            <Route component={NotFound} />
+                            <Route path='/project/:id' component={() => <ToDoList todos={this.state.todos}/>}/>
+
+                            <Redirect from='/users' to='/'/>
+
+                            <Route component={NotFound}/>
                         </Switch>
                     </content>
 
