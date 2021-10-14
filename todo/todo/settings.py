@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
 
+    'drf_yasg',
+
     'users',
     'todoprojects',
 ]
@@ -75,6 +77,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    # Мне тоже этот вариант нравится больше
+    # 'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.AcceptHeaderVersioning',
+    # Но для удобной проверки включил этот
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
 }
 
 ROOT_URLCONF = 'todo.urls'
