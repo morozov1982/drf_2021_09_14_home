@@ -7,7 +7,7 @@ from .serializers import TodoUserSerializer, TodoUserSerializerV2
 
 
 class TodoUserViewSet(GenericViewSet, ListModelMixin, RetrieveModelMixin, UpdateModelMixin):
-    permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissions]
     # serializer_class = TodoUserSerializer
     queryset = TodoUser.objects.all()
 

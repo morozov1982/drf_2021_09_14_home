@@ -19,7 +19,7 @@ class Project(models.Model):
 class ToDo(models.Model):
     title = models.CharField(max_length=64, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='Проект')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='Проект')
     user = models.ForeignKey(TodoUser, on_delete=models.CASCADE, verbose_name='Создал')
     is_active = models.BooleanField(default=True, verbose_name='Статус')
     is_closed = models.BooleanField(default=False, verbose_name='Закрыто')
